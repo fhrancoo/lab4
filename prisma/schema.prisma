@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Departamentos {
+  idDepartamento String      @id(map: "PK__Departam__C225F98D27BE47EC") @default(dbgenerated("newid()"), map: "DF__Departame__idDep__37A5467C") @db.UniqueIdentifier
+  nombre         String      @db.VarChar(30)
+  Empleados      Empleados[]
+}
+
+model Empleados {
+  idEmpleado        String         @id(map: "PK__Empleado__5295297CA8A1C90E") @default(dbgenerated("newid()"), map: "DF__Empleados__idEmp__3A81B327") @db.UniqueIdentifier
+  nombre            String         @db.VarChar(30)
+  apellido          String         @db.VarChar(30)
+  salario           Decimal        @db.Decimal(10, 2)
+  fechaContratacion DateTime       @db.Date
+  idDepartamento    String?        @db.UniqueIdentifier
+  Departamentos     Departamentos? @relation(fields: [idDepartamento], references: [idDepartamento], onDelete: NoAction, onUpdate: NoAction, map: "FK__Empleados__idDep__3B75D760")
+}
