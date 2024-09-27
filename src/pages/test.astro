@@ -1,15 +1,39 @@
 ---
+import { PrismaClient } from '@prisma/client'
 import Layout from '../layouts/Layout.astro';
 import Cuadrado from '../components/Cuadrado.astro';
 
 const title = 'Test';
 
+const prisma = new PrismaClient()
+
+const employees = await prisma.empleados.findMany({
+  where: {
+    fechaContratacion: {
+      gte: new Date(2003, 0, 1)
+    },
+  },
+  select: {
+    nombre: true,
+    apellido: true,
+    salario: true,
+    fechaContratacion: true
+  }
+});
+
+console.log('employees: ', employees);
 ---
 
-<Layout title={title}>
+<!-- <Layout title={title}> -->
 
-  <h1 class="text-5xl text-red-500">{title}</h1>
+  <!-- <h1 class="text-5xl text-red-500">{title}</h1>
 
-  <Cuadrado />
+  <Cuadrado /> -->
+
+  {
+    employees.map((employee) => (
+      <p class="text-5xl text-red-500">{`${employee.nombre} ${employee.apellido} - Salario: $${employee.salario}`}</p>
+    ))
+  } 
 
 </Layout>
